@@ -1,5 +1,6 @@
 package com.Project.FraudGuard.Entities;
 
+import com.Project.FraudGuard.Entities.Enums.GovernmentId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,8 +17,10 @@ public class NomineeEntity {
 
     private String nomineeName;
     private String nomineeRelationship; // e.g., "Spouse", "Parent"
-    private String nomineeGovernmentId; // e.g., Aadhar, PAN
-    private String nomineeGovernmentIdType; // e.g., "Aadhar", "PAN"
+    private String nomineeGovernmentId;// e.g., Aadhaar, PAN
+
+    @Enumerated(EnumType.STRING)
+    private GovernmentId nomineeGovernmentIdType; // e.g., "Aadhaar", "PAN"
     private String nomineePhoneNumber;
 
     // Foreign Key relationship to BankAccount

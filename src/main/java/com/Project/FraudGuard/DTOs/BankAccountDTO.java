@@ -26,8 +26,8 @@ public class BankAccountDTO {
     // Business Account fields (only filled for Business accounts)
     private String businessRegistrationNumber; // GST or Company Registration Number (For Business accounts)
     private String authorizedRepresentativeName; // Name of the authorized representative (For Business accounts)
-    private String authorizedRepresentativeId; // PAN or Aadhaar of the representative (For Business accounts)
-    private String businessType; // LLC, Corporation, etc. (For Business accounts)
+    private String authorizedRepresentativeId;// PAN or Aadhaar of the representative (For Business accounts)
+    private String authorizedRepresentativeIdType;
     private String businessAddress; // Address of the business (For Business accounts)
 
     // List of nominees associated with the bank account
