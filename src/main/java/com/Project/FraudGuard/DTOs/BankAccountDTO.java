@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,4 +26,7 @@ public class BankAccountDTO {
     private String authorizedRepresentativeId; // PAN or Aadhaar of the representative (For Business accounts)
     private String businessType; // LLC, Corporation, etc. (For Business accounts)
     private String businessAddress; // Address of the business (For Business accounts)
+
+    // List of nominees associated with the bank account
+    private List<NomineeDTO> nominees;
 }
