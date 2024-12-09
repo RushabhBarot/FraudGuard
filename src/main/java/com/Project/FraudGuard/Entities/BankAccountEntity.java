@@ -17,6 +17,8 @@ public class BankAccountEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String accountNumber;  // Unique account number (e.g., "ACC123456")
+
     private String accountHolderName;
     private String accountType; // "Personal" or "Business"
     private double balance;
@@ -36,4 +38,10 @@ public class BankAccountEntity {
 
     @OneToMany(mappedBy = "bankAccount", cascade = CascadeType.ALL)
     private List<NomineeEntity> nominees;
+
+    @OneToMany(mappedBy = "senderAccount", cascade = CascadeType.ALL)
+    private List<TransactionEntity> sentTransactions;  // List of transactions initiated by this account
+
+    @OneToMany(mappedBy = "recipientAccount", cascade = CascadeType.ALL)
+    private List<TransactionEntity> receivedTransactions;  // List of transactions received by this account
 }

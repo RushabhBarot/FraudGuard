@@ -1,5 +1,6 @@
 package com.Project.FraudGuard.DTOs;
 
+import com.Project.FraudGuard.Entities.TransactionEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BankAccountDTO {
+
+    private String accountNumber;
 
     private String accountHolderName;
     private String accountType;
@@ -29,4 +32,6 @@ public class BankAccountDTO {
 
     // List of nominees associated with the bank account
     private List<NomineeDTO> nominees;
+    private List<TransactionEntity> sentTransactions;
+    private List<TransactionEntity> receivedTransactions;
 }
