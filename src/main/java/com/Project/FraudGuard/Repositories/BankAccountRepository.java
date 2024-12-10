@@ -10,4 +10,7 @@ import java.util.Optional;
 public interface BankAccountRepository extends JpaRepository<BankAccountEntity,Long> {
     // Find a BankAccountEntity by account number
     Optional<BankAccountEntity> findByAccountNumber(String accountNumber);
+    //Optional<BankAccountEntity> findBySenderAccountId(Long senderID);
+    //Optional<BankAccountEntity> findByRecipientAccountId(Long receiveID);
+    Optional<BankAccountEntity> findById(Long accountId);
 }

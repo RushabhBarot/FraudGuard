@@ -1,6 +1,5 @@
 package com.Project.FraudGuard.Entities;
 
-
 import com.Project.FraudGuard.Entities.Enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,16 +21,21 @@ public class TransactionEntity {
     private Date timestamp;
 
     @Enumerated(EnumType.STRING)
-    private TransactionType transactionType;  // "TRANSFER", "DEPOSIT", "WITHDRAWAL"
-
-    private String senderAccountId;  // Sender's account number
-    private String recipientAccountId;  // Recipient's account number
+    private TransactionType transactionType;
 
     @ManyToOne
-    @JoinColumn(name = "senderAccountId", referencedColumnName = "accountNumber", insertable = false, updatable = false)
-    private BankAccountEntity senderAccount;  // Sender's bank account
+    @JoinColumn(name = "sender_account_id")
+    private BankAccountEntity senderAccount;
 
     @ManyToOne
-    @JoinColumn(name = "recipientAccountId", referencedColumnName = "accountNumber", insertable = false, updatable = false)
-    private BankAccountEntity recipientAccount;  // Recipient's bank account
+    @JoinColumn(name = "recipient_account_id")
+    private BankAccountEntity recipientAccount;
+
+    @Column(nullable = false)
+    private String senderBank = "Bank1"; // Default bank for sender
+
+    @Column(nullable = false)
+    private String receiverBank;
+
+    private String remarks;
 }

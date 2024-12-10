@@ -11,12 +11,18 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TransactionDTO {
-
-    private Long id;
     private double amount;
     private Date timestamp;
-    private TransactionType transactionType;  // "TRANSFER", "DEPOSIT", "WITHDRAWAL"
-    private String senderAccountId;  // Account number of the sender
-    private String recipientAccountId;  // Account number of the recipient
+    private TransactionType transactionType;
 
+    private Long senderAccountId; // Account ID instead of Account Number
+    private Long recipientAccountId; // Account ID instead of Account Number
+
+    private String senderBank = "Bank1"; // Default bank for sender
+    private String receiverBank; // Receiver's bank
+    private String remarks;
+
+    public double getAmount() {
+        return amount;
+    }
 }

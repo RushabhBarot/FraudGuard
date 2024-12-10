@@ -1,39 +1,38 @@
 package com.Project.FraudGuard.DTOs;
 
 import com.Project.FraudGuard.Entities.Enums.AccountType;
-import com.Project.FraudGuard.Entities.Enums.GovernmentId;
-import com.Project.FraudGuard.Entities.TransactionEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class BankAccountDTO {
 
-    private String accountNumber;
+    private Long id; // Bank account ID (for referencing)
 
-    private String accountHolderName;
-    private AccountType accountType;
-    private double balance;
+    private String accountNumber; // Unique account number
 
+    private AccountType accountType; // "Personal" or "Business"
 
-    // Personal Account fields (only filled for Personal accounts)
-    private String governmentId; // e.g., PAN or Aadhaar (For Personal accounts only)
-    private GovernmentId governmentIdType; // "PAN" or "Aadhaar" (For Personal accounts only)
+    private double balance; // Account balance
 
-    // Business Account fields (only filled for Business accounts)
-    private String businessRegistrationNumber; // GST or Company Registration Number (For Business accounts)
-    private String authorizedRepresentativeName; // Name of the authorized representative (For Business accounts)
-    private String authorizedRepresentativeId;// PAN or Aadhaar of the representative (For Business accounts)
-    private GovernmentId authorizedRepresentativeIdType;
-    private String businessAddress; // Address of the business (For Business accounts)
+    // Fields specific to Business Accounts (if applicable)
+    private String businessRegistrationNumber; // GST or Company Registration Number
+    private String authorizedRepresentativeName; // Authorized representative name
+    private String businessAddress; // Address of the business
 
-    // List of nominees associated with the bank account
-    private List<NomineeDTO> nominees;
-    private List<TransactionEntity> sentTransactions;
-    private List<TransactionEntity> receivedTransactions;
+    private Date creationDate; // Date when the account was created
+
+    private Long userId; // ID of the account holder (UserEntity)
+
+    private List<Long> nomineeIds; // List of nominee IDs (instead of full user objects for better performance)
+
+    private List<Long> sentTransactionIds; // List of transaction IDs sent by this account
+
+    private List<Long> receivedTransactionIds; // List of transaction IDs received by this account
 }
