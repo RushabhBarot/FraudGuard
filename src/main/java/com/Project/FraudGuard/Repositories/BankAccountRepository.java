@@ -12,5 +12,5 @@ public interface BankAccountRepository extends JpaRepository<BankAccountEntity,L
     Optional<BankAccountEntity> findByAccountNumber(String accountNumber);
     //Optional<BankAccountEntity> findBySenderAccountId(Long senderID);
     //Optional<BankAccountEntity> findByRecipientAccountId(Long receiveID);
-    Optional<BankAccountEntity> findById(Long accountId);
+    Optional<BankAccountEntity> findByUserId(Long accountId);
 }

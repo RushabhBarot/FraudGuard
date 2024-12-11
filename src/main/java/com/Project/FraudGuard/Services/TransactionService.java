@@ -27,11 +27,11 @@ public class TransactionService {
       try {  // Log incoming transaction details
           System.out.println("Creating transaction: " + transactionDTO);
 
-          BankAccountEntity sender = bankAccountRepository.findById(transactionDTO.getSenderAccountId())
+          BankAccountEntity sender = bankAccountRepository.findByUserId(transactionDTO.getSenderAccountId())
                   .orElseThrow(() -> new IllegalArgumentException("Sender account not found"));
           System.out.println("Sender account found: " + sender);
 
-          BankAccountEntity recipient = bankAccountRepository.findById(transactionDTO.getRecipientAccountId())
+          BankAccountEntity recipient = bankAccountRepository.findByUserId(transactionDTO.getRecipientAccountId())
                   .orElseThrow(() -> new IllegalArgumentException("Recipient account not found"));
           System.out.println("Recipient account found: " + recipient);
 
