@@ -30,9 +30,9 @@ public class BankAccountDTO {
 
     private Long userId; // ID of the account holder (UserEntity)
 
-    private List<Long> nomineeIds; // List of nominee IDs (instead of full user objects for better performance)
+    private List<Long> nominees; // List of nominee IDs (instead of full user objects for better performance)
 
-    private List<Long> sentTransactionIds; // List of transaction IDs sent by this account
-
-    private List<Long> receivedTransactionIds; // List of transaction IDs received by this account
+//    private List<Long> sentTransactionIds; // List of transaction IDs sent by this account
+//
+//    private List<Long> receivedTransactionIds; // List of transaction IDs received by this account
 }

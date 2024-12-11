@@ -33,7 +33,7 @@ public class TransactionController {
     @GetMapping("/account/{accountNumber}/sent")
     public ResponseEntity<?> getSentTransactions(@PathVariable String accountNumber) {
         try {
-            List<TransactionDTO> transactions = transactionService.getSentTransactions(Long.valueOf(accountNumber));
+            List<TransactionDTO> transactions = transactionService.getSentTransactions(accountNumber);
             return new ResponseEntity<>(transactions, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -46,7 +46,7 @@ public class TransactionController {
     @GetMapping("/account/{accountNumber}/received")
     public ResponseEntity<?> getReceivedTransactions(@PathVariable String accountNumber) {
         try {
-            List<TransactionDTO> transactions = transactionService.getReceivedTransactions(Long.valueOf(accountNumber));
+            List<TransactionDTO> transactions = transactionService.getReceivedTransactions(accountNumber);
             return new ResponseEntity<>(transactions, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

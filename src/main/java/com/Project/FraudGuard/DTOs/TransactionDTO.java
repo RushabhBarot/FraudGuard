@@ -16,12 +16,14 @@ public class TransactionDTO {
     private Date timestamp;
     private TransactionType transactionType;
 
-    private Long senderAccountId; // Account ID instead of Account Number
-    private Long recipientAccountId; // Account ID instead of Account Number
+    private String senderAccountNumber;  // Account number of sender
+    private String recipientAccountNumber; // Account number of recipient
 
     private String senderBank = "Bank1"; // Default bank for sender
     private String receiverBank; // Receiver's bank
     private String remarks;
+
+    private UserDTO senderUserData;  // Added to include sender user data only
 
     public double getAmount() {
         return amount;

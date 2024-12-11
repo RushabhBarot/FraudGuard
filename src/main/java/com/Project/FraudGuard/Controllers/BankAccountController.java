@@ -38,14 +38,14 @@ public class BankAccountController {
     // Endpoint to get all sent transactions for a bank account
     @GetMapping("/{accountNumber}/sent-transactions")
     public ResponseEntity<List<TransactionDTO>> getSentTransactions(@PathVariable String accountNumber) {
-        List<TransactionDTO> sentTransactions = transactionService.getSentTransactions(Long.valueOf(accountNumber));
+        List<TransactionDTO> sentTransactions = transactionService.getSentTransactions(accountNumber);
         return ResponseEntity.ok(sentTransactions);
     }
 
     // Endpoint to get all received transactions for a bank account
     @GetMapping("/{accountNumber}/received-transactions")
     public ResponseEntity<List<TransactionDTO>> getReceivedTransactions(@PathVariable String accountNumber) {
-        List<TransactionDTO> receivedTransactions = transactionService.getReceivedTransactions(Long.valueOf(accountNumber));
+        List<TransactionDTO> receivedTransactions = transactionService.getReceivedTransactions(accountNumber);
         return ResponseEntity.ok(receivedTransactions);
     }
 }

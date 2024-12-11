@@ -20,5 +20,5 @@ public class UserDTO {
     private String address;
 
     // List of IDs representing bank accounts associated with this user
-    private List<Long> accountIds;
+    private List<Long> accountId;
 }

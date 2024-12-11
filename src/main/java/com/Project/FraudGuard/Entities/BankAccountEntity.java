@@ -56,7 +56,7 @@ public class BankAccountEntity {
 
     @Override
     public String toString() {
-        return "BankAccountEntity{id=" + id + ", accountNumber='" + accountNumber + "', ...}";
+        return "BankAccountEntity{id=" + id + ", accountNumber='" + accountNumber + "nominees= ', ...}"+nominees;
     }
 
     public double getBalance() {

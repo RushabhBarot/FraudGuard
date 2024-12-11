@@ -1,6 +1,7 @@
 package com.Project.FraudGuard.Services;
 
 import com.Project.FraudGuard.DTOs.TransactionDTO;
+import com.Project.FraudGuard.DTOs.UserDTO;
 import com.Project.FraudGuard.Entities.BankAccountEntity;
 import com.Project.FraudGuard.Entities.TransactionEntity;
 import com.Project.FraudGuard.Repositories.BankAccountRepository;
@@ -22,76 +23,97 @@ public class TransactionService {
     private final BankAccountRepository bankAccountRepository;
     private final ModelMapper mapper;
 
+    // Create a transaction using account numbers
     @Transactional
     public TransactionDTO createTransaction(TransactionDTO transactionDTO) {
-      try {  // Log incoming transaction details
-          System.out.println("Creating transaction: " + transactionDTO);
+        try {
+            // Fetch the sender and recipient accounts using account numbers
+            BankAccountEntity sender = bankAccountRepository.findByAccountNumber(transactionDTO.getSenderAccountNumber())
+                    .orElseThrow(() -> new IllegalArgumentException("Sender account not found"));
+            BankAccountEntity recipient = bankAccountRepository.findByAccountNumber(transactionDTO.getRecipientAccountNumber())
+                    .orElseThrow(() -> new IllegalArgumentException("Recipient account not found"));
 
-          BankAccountEntity sender = bankAccountRepository.findByUserId(transactionDTO.getSenderAccountId())
-                  .orElseThrow(() -> new IllegalArgumentException("Sender account not found"));
-          System.out.println("Sender account found: " + sender);
+            // Ensure the sender has enough balance
+            if (sender.getBalance() < transactionDTO.getAmount()) {
+                throw new IllegalArgumentException("Insufficient funds in sender's account");
+            }
 
-          BankAccountEntity recipient = bankAccountRepository.findByUserId(transactionDTO.getRecipientAccountId())
-                  .orElseThrow(() -> new IllegalArgumentException("Recipient account not found"));
-          System.out.println("Recipient account found: " + recipient);
+            // Update the balances
+            sender.setBalance(sender.getBalance() - transactionDTO.getAmount());
+            recipient.setBalance(recipient.getBalance() + transactionDTO.getAmount());
+            bankAccountRepository.save(sender);
+            bankAccountRepository.save(recipient);
 
-          if (sender.getBalance() < transactionDTO.getAmount()) {
-              throw new IllegalArgumentException("Insufficient funds in sender's account");
-          }
+            // Create the transaction entity
+            TransactionEntity transaction = mapper.map(transactionDTO, TransactionEntity.class);
+            transaction.setSenderAccount(sender);
+            transaction.setRecipientAccount(recipient);
 
-          sender.setBalance(sender.getBalance() - transactionDTO.getAmount());
-          recipient.setBalance(recipient.getBalance() + transactionDTO.getAmount());
-          System.out.println("Sender's balance is..." + sender.getBalance());
-          bankAccountRepository.save(sender);
-          bankAccountRepository.save(recipient);
+            // Save the transaction
+            TransactionEntity savedTransaction = transactionRepository.save(transaction);
 
-          TransactionEntity transaction = mapper.map(transactionDTO, TransactionEntity.class);
-          transaction.setSenderAccount(sender);
-          transaction.setRecipientAccount(recipient);
+            // Map to TransactionDTO and include sender details
+            TransactionDTO transactionResponse = mapper.map(savedTransaction, TransactionDTO.class);
+            transactionResponse.setSenderUserData(mapper.map(sender.getUser(), UserDTO.class)); // Include sender user data
 
-          TransactionEntity savedTransaction = transactionRepository.save(transaction);
-          System.out.println("Transaction saved: " + savedTransaction);
-
-          return mapper.map(savedTransaction, TransactionDTO.class);
-      } catch (Exception e) {
-          System.out.println(e);
-          throw new RuntimeException(e);
-      }
-    }
-
-    // Get all sent transactions for an account
-    public List<TransactionDTO> getSentTransactions(Long accountId) {
-        BankAccountEntity account = bankAccountRepository.findById(accountId)
-                .orElseThrow(() -> new IllegalArgumentException("Account not found"));
-
-        return account.getSentTransactions()
-                .stream()
-                .map(transaction -> mapper.map(transaction, TransactionDTO.class))
-                .collect(Collectors.toList());
-    }
-
-    // Get all received transactions for an account
-    public List<TransactionDTO> getReceivedTransactions(Long accountId) {
-        BankAccountEntity account = bankAccountRepository.findById(accountId)
-                .orElseThrow(() -> new IllegalArgumentException("Account not found"));
-
-        return account.getReceivedTransactions()
-                .stream()
-                .map(transaction -> mapper.map(transaction, TransactionDTO.class))
-                .collect(Collectors.toList());
+            return transactionResponse;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // Get all transactions globally
     public List<TransactionDTO> getAllTransactions() {
-        return transactionRepository.findAll()
-                .stream()
-                .map(transaction -> mapper.map(transaction, TransactionDTO.class))
+        // Fetch all transactions
+        List<TransactionEntity> transactions = transactionRepository.findAll();
+
+        // Map to TransactionDTOs and include sender's user data
+        return transactions.stream()
+                .map(transaction -> {
+                    TransactionDTO transactionDTO = mapper.map(transaction, TransactionDTO.class);
+                    transactionDTO.setSenderUserData(mapper.map(transaction.getSenderAccount().getUser(), UserDTO.class)); // Include sender user data
+                    return transactionDTO;
+                })
                 .collect(Collectors.toList());
     }
 
-    // Get a transaction by ID
+    // Get sent transactions for a specific account by account number
+    public List<TransactionDTO> getSentTransactions(String accountNumber) {
+        BankAccountEntity account = bankAccountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found"));
+
+        return account.getSentTransactions()
+                .stream()
+                .map(transaction -> {
+                    TransactionDTO transactionDTO = mapper.map(transaction, TransactionDTO.class);
+                    transactionDTO.setSenderUserData(mapper.map(transaction.getSenderAccount().getUser(), UserDTO.class)); // Include sender user data
+                    return transactionDTO;
+                })
+                .collect(Collectors.toList());
+    }
+
+    // Get received transactions for a specific account by account number
+    public List<TransactionDTO> getReceivedTransactions(String accountNumber) {
+        BankAccountEntity account = bankAccountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found"));
+
+        return account.getReceivedTransactions()
+                .stream()
+                .map(transaction -> {
+                    TransactionDTO transactionDTO = mapper.map(transaction, TransactionDTO.class);
+                    transactionDTO.setSenderUserData(mapper.map(transaction.getSenderAccount().getUser(), UserDTO.class)); // Include sender user data
+                    return transactionDTO;
+                })
+                .collect(Collectors.toList());
+    }
+
+    // Get a specific transaction by ID
     public Optional<TransactionDTO> getTransactionById(Long transactionId) {
         return transactionRepository.findById(transactionId)
-                .map(transaction -> mapper.map(transaction, TransactionDTO.class));
+                .map(transaction -> {
+                    TransactionDTO transactionDTO = mapper.map(transaction, TransactionDTO.class);
+                    transactionDTO.setSenderUserData(mapper.map(transaction.getSenderAccount().getUser(), UserDTO.class)); // Include sender user data
+                    return transactionDTO;
+                });
     }
 }
